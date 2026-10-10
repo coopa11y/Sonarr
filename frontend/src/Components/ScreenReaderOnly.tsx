@@ -1,5 +1,5 @@
 import React, { ComponentPropsWithoutRef } from 'react';
-import styles from './ScreenReaderOnly.css';
+import styles from './ScreenReaderOnly.module.css';
 
 type ScreenReaderOnlyProps = ComponentPropsWithoutRef<'span'>;
 

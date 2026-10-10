@@ -1,22 +1,26 @@
 import React, { useCallback, useState } from 'react';
-import FormGroup from 'Components/Form/FormGroup';
-import FormInputGroup from 'Components/Form/FormInputGroup';
+import FormInput from 'Components/Form/FormInput';
+import FormInputHelpText from 'Components/Form/FormInputHelpText';
 import FormLabel from 'Components/Form/FormLabel';
+import FormRow from 'Components/Form/FormRow';
 import { EnhancedSelectInputValue } from 'Components/Form/Select/EnhancedSelectInput';
 import Button from 'Components/Link/Button';
 import ModalBody from 'Components/Modal/ModalBody';
 import ModalContent from 'Components/Modal/ModalContent';
 import ModalFooter from 'Components/Modal/ModalFooter';
 import ModalHeader from 'Components/Modal/ModalHeader';
+import ModalSection from 'Components/ModalSection';
 import { inputTypes } from 'Helpers/Props';
+import Language from 'Language/Language';
 import { InputChanged } from 'typings/inputs';
 import translate from 'Utilities/String/translate';
-import styles from './ManageImportListsEditModalContent.css';
+import styles from './ManageImportListsEditModalContent.module.css';
 
 interface SavePayload {
   enableAutomaticAdd?: boolean;
   qualityProfileId?: number;
   rootFolderPath?: string;
+  language?: Language;
   tagExisting?: boolean;
 }
 
@@ -60,6 +64,7 @@ function ManageImportListsEditModalContent(
     NO_CHANGE
   );
   const [rootFolderPath, setRootFolderPath] = useState(NO_CHANGE);
+  const [language, setLanguage] = useState<string | Language>(NO_CHANGE);
   const [tagExisting, setTagExisting] = useState(NO_CHANGE);
 
   const save = useCallback(() => {
@@ -81,6 +86,11 @@ function ManageImportListsEditModalContent(
       payload.rootFolderPath = rootFolderPath;
     }
 
+    if (language !== NO_CHANGE) {
+      hasChanges = true;
+      payload.language = language as Language;
+    }
+
     if (tagExisting !== NO_CHANGE) {
       hasChanges = true;
       payload.tagExisting = tagExisting === 'enabled';
@@ -95,6 +105,7 @@ function ManageImportListsEditModalContent(
     enableAutomaticAdd,
     qualityProfileId,
     rootFolderPath,
+    language,
     tagExisting,
     onSavePress,
     onModalClose,
@@ -111,6 +122,9 @@ function ManageImportListsEditModalContent(
       case 'rootFolderPath':
         setRootFolderPath(value as string);
         break;
+      case 'language':
+        setLanguage(value as Language);
+        break;
       case 'tagExisting':
         setTagExisting(value as string);
         break;
@@ -124,58 +138,75 @@ function ManageImportListsEditModalContent(
   return (
     <ModalContent onModalClose={onModalClose}>
       <ModalHeader>{translate('EditSelectedImportLists')}</ModalHeader>
-
       <ModalBody>
-        <FormGroup>
+        <FormRow>
           <FormLabel>{translate('AutomaticAdd')}</FormLabel>
 
-          <FormInputGroup
+          <FormInput
             type={inputTypes.SELECT}
             name="enableAutomaticAdd"
             value={enableAutomaticAdd}
             values={autoAddOptions}
             onChange={onInputChange}
           />
-        </FormGroup>
+        </FormRow>
 
-        <FormGroup>
-          <FormLabel>{translate('QualityProfile')}</FormLabel>
+        <ModalSection
+          title={translate('ManageImportListsEditModalContentLibrarySection')}
+        >
+          <FormRow>
+            <FormLabel>{translate('QualityProfile')}</FormLabel>
 
-          <FormInputGroup
-            type={inputTypes.QUALITY_PROFILE_SELECT}
-            name="qualityProfileId"
-            value={qualityProfileId}
-            includeNoChange={true}
-            includeNoChangeDisabled={false}
-            onChange={onInputChange}
-          />
-        </FormGroup>
+            <FormInput
+              type={inputTypes.QUALITY_PROFILE_SELECT}
+              name="qualityProfileId"
+              value={qualityProfileId}
+              includeNoChange={true}
+              includeNoChangeDisabled={false}
+              onChange={onInputChange}
+            />
+          </FormRow>
 
-        <FormGroup>
-          <FormLabel>{translate('RootFolder')}</FormLabel>
+          <FormRow>
+            <FormLabel>{translate('RootFolder')}</FormLabel>
 
-          <FormInputGroup
-            type={inputTypes.ROOT_FOLDER_SELECT}
-            name="rootFolderPath"
-            value={rootFolderPath}
-            includeNoChange={true}
-            includeNoChangeDisabled={false}
-            selectedValueOptions={{ includeFreeSpace: false }}
-            onChange={onInputChange}
-          />
-        </FormGroup>
+            <FormInput
+              type={inputTypes.ROOT_FOLDER_SELECT}
+              name="rootFolderPath"
+              value={rootFolderPath}
+              includeNoChange={true}
+              includeNoChangeDisabled={false}
+              selectedValueOptions={{ includeFreeSpace: false }}
+              onChange={onInputChange}
+            />
+          </FormRow>
 
-        <FormGroup>
-          <FormLabel>{translate('TagExisting')}</FormLabel>
+          <FormRow>
+            <FormLabel>{translate('Language')}</FormLabel>
 
-          <FormInputGroup
-            type={inputTypes.SELECT}
-            name="tagExisting"
-            value={tagExisting}
-            values={autoAddOptions}
-            onChange={onInputChange}
-          />
-        </FormGroup>
+            <FormInputHelpText text={translate('ListLanguageHelpText')} />
+            <FormInput
+              type={inputTypes.LANGUAGE_SELECT}
+              name="language"
+              value={language}
+              includeAny={false}
+              includeNoChange={true}
+              includeNoChangeDisabled={false}
+              onChange={onInputChange}
+            />
+          </FormRow>
+
+          <FormRow>
+            <FormLabel>{translate('TagExisting')}</FormLabel>
+            <FormInput
+              type={inputTypes.SELECT}
+              name="tagExisting"
+              value={tagExisting}
+              values={autoAddOptions}
+              onChange={onInputChange}
+            />
+          </FormRow>
+        </ModalSection>
       </ModalBody>
 
       <ModalFooter className={styles.modalFooter}>
@@ -185,7 +216,7 @@ function ManageImportListsEditModalContent(
           })}
         </div>
 
-        <div>
+        <div className={styles.buttons}>
           <Button onPress={onModalClose}>{translate('Cancel')}</Button>
 
           <Button onPress={save}>{translate('ApplyChanges')}</Button>

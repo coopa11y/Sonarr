@@ -6,9 +6,10 @@ import {
 } from 'Calendar/calendarOptionsStore';
 import FieldSet from 'Components/FieldSet';
 import Form from 'Components/Form/Form';
-import FormGroup from 'Components/Form/FormGroup';
-import FormInputGroup from 'Components/Form/FormInputGroup';
+import FormInput from 'Components/Form/FormInput';
+import FormInputHelpText from 'Components/Form/FormInputHelpText';
 import FormLabel from 'Components/Form/FormLabel';
+import FormRow from 'Components/Form/FormRow';
 import Button from 'Components/Link/Button';
 import ModalBody from 'Components/Modal/ModalBody';
 import ModalContent from 'Components/Modal/ModalContent';
@@ -38,6 +39,7 @@ function CalendarOptionsModalContent({
 }: CalendarOptionsModalContentProps) {
   const {
     collapseMultipleEpisodes,
+    showCoverArt,
     showEpisodeInformation,
     showFinaleIcon,
     showSpecialIcon,
@@ -94,154 +96,157 @@ function CalendarOptionsModalContent({
       <ModalBody>
         <FieldSet legend={translate('Local')}>
           <Form>
-            <FormGroup>
-              <FormLabel name="collapseMultipleEpisodes">
-                {translate('CollapseMultipleEpisodes')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('CollapseMultipleEpisodes')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText
+                text={translate('CollapseMultipleEpisodesHelpText')}
+              />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="collapseMultipleEpisodes"
                 value={collapseMultipleEpisodes}
-                helpText={translate('CollapseMultipleEpisodesHelpText')}
                 // @ts-expect-error - The typing for inputs needs more work
                 onChange={handleOptionInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="showEpisodeInformation">
-                {translate('ShowEpisodeInformation')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('ShowCoverArt')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText text={translate('ShowCoverArtHelpText')} />
+              <FormInput
+                type={inputTypes.CHECK}
+                name="showCoverArt"
+                value={showCoverArt}
+                // @ts-expect-error - The typing for inputs needs more work
+                onChange={handleOptionInputChange}
+              />
+            </FormRow>
+
+            <FormRow>
+              <FormLabel>{translate('ShowEpisodeInformation')}</FormLabel>
+
+              <FormInputHelpText
+                text={translate('ShowEpisodeInformationHelpText')}
+              />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="showEpisodeInformation"
                 value={showEpisodeInformation}
-                helpText={translate('ShowEpisodeInformationHelpText')}
                 // @ts-expect-error - The typing for inputs needs more work
                 onChange={handleOptionInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="showFinaleIcon">
-                {translate('IconForFinales')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('IconForFinales')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText text={translate('IconForFinalesHelpText')} />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="showFinaleIcon"
                 value={showFinaleIcon}
-                helpText={translate('IconForFinalesHelpText')}
                 // @ts-expect-error - The typing for inputs needs more work
                 onChange={handleOptionInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="showSpecialIcon">
-                {translate('IconForSpecials')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('IconForSpecials')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText text={translate('IconForSpecialsHelpText')} />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="showSpecialIcon"
                 value={showSpecialIcon}
-                helpText={translate('IconForSpecialsHelpText')}
                 // @ts-expect-error - The typing for inputs needs more work
                 onChange={handleOptionInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="showCutoffUnmetIcon">
-                {translate('IconForCutoffUnmet')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('IconForCutoffUnmet')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText
+                text={translate('IconForCutoffUnmetHelpText')}
+              />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="showCutoffUnmetIcon"
                 value={showCutoffUnmetIcon}
-                helpText={translate('IconForCutoffUnmetHelpText')}
                 // @ts-expect-error - The typing for inputs needs more work
                 onChange={handleOptionInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="fullColorEvents">
-                {translate('FullColorEvents')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('FullColorEvents')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText text={translate('FullColorEventsHelpText')} />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="fullColorEvents"
                 value={fullColorEvents}
-                helpText={translate('FullColorEventsHelpText')}
                 // @ts-expect-error - The typing for inputs needs more work
                 onChange={handleOptionInputChange}
               />
-            </FormGroup>
+            </FormRow>
           </Form>
         </FieldSet>
 
         <FieldSet legend={translate('Global')}>
           <Form>
-            <FormGroup>
-              <FormLabel name="firstDayOfWeek">
-                {translate('FirstDayOfWeek')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('FirstDayOfWeek')}</FormLabel>
 
-              <FormInputGroup
+              <FormInput
                 type={inputTypes.SELECT}
                 name="firstDayOfWeek"
                 values={firstDayOfWeekOptions}
                 value={firstDayOfWeek}
                 onChange={handleGlobalInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="calendarWeekColumnHeader">
-                {translate('WeekColumnHeader')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('WeekColumnHeader')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText text={translate('WeekColumnHeaderHelpText')} />
+              <FormInput
                 type={inputTypes.SELECT}
                 name="calendarWeekColumnHeader"
                 values={weekColumnOptions}
                 value={calendarWeekColumnHeader}
-                helpText={translate('WeekColumnHeaderHelpText')}
                 onChange={handleGlobalInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="timeFormat">{translate('TimeFormat')}</FormLabel>
+            <FormRow>
+              <FormLabel>{translate('TimeFormat')}</FormLabel>
 
-              <FormInputGroup
+              <FormInput
                 type={inputTypes.SELECT}
                 name="timeFormat"
                 values={timeFormatOptions}
                 value={timeFormat}
                 onChange={handleGlobalInputChange}
               />
-            </FormGroup>
+            </FormRow>
 
-            <FormGroup>
-              <FormLabel name="enableColorImpairedMode">
-                {translate('EnableColorImpairedMode')}
-              </FormLabel>
+            <FormRow>
+              <FormLabel>{translate('EnableColorImpairedMode')}</FormLabel>
 
-              <FormInputGroup
+              <FormInputHelpText
+                text={translate('EnableColorImpairedModeHelpText')}
+              />
+              <FormInput
                 type={inputTypes.CHECK}
                 name="enableColorImpairedMode"
                 value={enableColorImpairedMode}
-                helpText={translate('EnableColorImpairedModeHelpText')}
                 onChange={handleGlobalInputChange}
               />
-            </FormGroup>
+            </FormRow>
           </Form>
         </FieldSet>
       </ModalBody>

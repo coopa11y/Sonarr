@@ -19,7 +19,7 @@ import translate from 'Utilities/String/translate';
 import CalendarEventQueueDetails from './CalendarEventQueueDetails';
 import getCalendarEventStatusDetails from './getCalendarEventStatusDetails';
 import getCalendarStatusLabel from './getCalendarStatusLabel';
-import styles from './CalendarEvent.css';
+import styles from './CalendarEvent.module.css';
 
 interface CalendarEventProps {
   id: number;
@@ -61,8 +61,7 @@ function CalendarEvent(props: CalendarEventProps) {
   const episodeFile = useEpisodeFile(episodeFileId);
   const queueItem = useQueueItemForEpisode(id);
 
-  const { timeFormat, longDateFormat, enableColorImpairedMode } =
-    useUiSettingsValues();
+  const { timeFormat, longDateFormat } = useUiSettingsValues();
 
   const {
     showEpisodeInformation,
@@ -101,7 +100,6 @@ function CalendarEvent(props: CalendarEventProps) {
   );
   const missingAbsoluteNumber =
     series.seriesType === 'anime' && seasonNumber > 0 && !absoluteEpisodeNumber;
-  const episodeNumberLabel = `${seasonNumber}x${padNumber(episodeNumber, 2)}`;
   const statusLabels = [
     getCalendarStatusLabel(statusStyle),
     ...getCalendarEventStatusDetails({
@@ -115,7 +113,7 @@ function CalendarEvent(props: CalendarEventProps) {
   ];
   const eventLabel = translate('CalendarOpenEpisodeDetails', {
     series: series.title,
-    episode: episodeNumberLabel,
+    episode: `${seasonNumber}x${padNumber(episodeNumber, 2)}`,
     title,
     airDate: `${startTime.format(longDateFormat)}, ${formatTime(
       airDateUtc,
@@ -129,7 +127,6 @@ function CalendarEvent(props: CalendarEventProps) {
       className={classNames(
         styles.event,
         styles[statusStyle],
-        enableColorImpairedMode && 'colorImpaired',
         fullColorEvents && 'fullColor'
       )}
     >
@@ -153,6 +150,7 @@ function CalendarEvent(props: CalendarEventProps) {
               <Icon
                 className={styles.statusIcon}
                 name={icons.WARNING}
+                kind={kinds.WARNING}
                 title={translate('EpisodeMissingAbsoluteNumber')}
               />
             ) : null}
@@ -161,6 +159,7 @@ function CalendarEvent(props: CalendarEventProps) {
               <Icon
                 className={styles.statusIcon}
                 name={icons.WARNING}
+                kind={kinds.WARNING}
                 title={translate('SceneNumberNotVerified')}
               />
             ) : null}
@@ -184,7 +183,7 @@ function CalendarEvent(props: CalendarEventProps) {
             episodeFile.qualityCutoffNotMet ? (
               <Icon
                 className={styles.statusIcon}
-                name={icons.EPISODE_FILE}
+                name={icons.CUTOFF_NOT_MET}
                 kind={kinds.WARNING}
                 title={translate('QualityCutoffNotMet')}
               />
@@ -219,7 +218,7 @@ function CalendarEvent(props: CalendarEventProps) {
             {showSpecialIcon && (episodeNumber === 0 || seasonNumber === 0) ? (
               <Icon
                 className={styles.statusIcon}
-                name={icons.INFO}
+                name={icons.SPECIAL}
                 kind={kinds.PINK}
                 title={translate('Special')}
               />

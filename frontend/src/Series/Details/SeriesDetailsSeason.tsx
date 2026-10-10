@@ -43,7 +43,7 @@ import getToggledRange from 'Utilities/Table/getToggledRange';
 import EpisodeRow from './EpisodeRow';
 import SeasonInfo from './SeasonInfo';
 import SeasonProgressLabel from './SeasonProgressLabel';
-import styles from './SeriesDetailsSeason.css';
+import styles from './SeriesDetailsSeason.module.css';
 
 function getSeasonStatistics(episodes: Episode[]) {
   let episodeCount = 0;
@@ -99,6 +99,7 @@ interface SeriesDetailsSeasonProps {
   monitored: boolean;
   seasonNumber: number;
   statistics?: Statistics;
+  title?: string;
   isExpanded?: boolean;
   onExpandPress: (seasonNumber: number, isExpanded: boolean) => void;
 }
@@ -108,6 +109,7 @@ function SeriesDetailsSeason({
   monitored,
   seasonNumber,
   statistics = {} as Statistics,
+  title,
   isExpanded,
   onExpandPress,
 }: SeriesDetailsSeasonProps) {
@@ -287,6 +289,11 @@ function SeriesDetailsSeason({
 
           <div className={styles.seasonInfo}>
             <div className={styles.seasonNumber}>{seasonNumberTitle}</div>
+            {title ? (
+              <div className={styles.seasonTitle} title={title}>
+                {title}
+              </div>
+            ) : null}
           </div>
 
           <div className={styles.seasonStats}>
@@ -347,7 +354,7 @@ function SeriesDetailsSeason({
             alignMenu={align.RIGHT}
             enforceMaxHeight={false}
           >
-            <MenuButton>
+            <MenuButton className={styles.actionsMenuButton}>
               <Icon name={icons.ACTIONS} size={22} />
             </MenuButton>
 
@@ -420,7 +427,7 @@ function SeriesDetailsSeason({
                   ? translate('SearchForMonitoredEpisodesSeason')
                   : translate('NoMonitoredEpisodesSeason')
               }
-              size={24}
+              size={20}
               isSpinning={isSearching}
               isDisabled={
                 isSearching || !hasMonitoredEpisodes || !seriesMonitored
@@ -433,7 +440,7 @@ function SeriesDetailsSeason({
               name={icons.INTERACTIVE}
               title={translate('InteractiveSearchSeason')}
               aria-label={translate('InteractiveSearchSeason')}
-              size={24}
+              size={20}
               isDisabled={!totalEpisodeCount}
               onPress={handleInteractiveSearchPress}
             />
@@ -443,7 +450,7 @@ function SeriesDetailsSeason({
               name={icons.ORGANIZE}
               title={translate('PreviewRenameSeason')}
               aria-label={translate('PreviewRenameSeason')}
-              size={24}
+              size={20}
               isDisabled={!episodeFileCount}
               onPress={handleOrganizePress}
             />
@@ -453,7 +460,7 @@ function SeriesDetailsSeason({
               name={icons.EPISODE_FILE}
               title={translate('ManageEpisodesSeason')}
               aria-label={translate('ManageEpisodesSeason')}
-              size={24}
+              size={20}
               isDisabled={!episodeFileCount}
               onPress={handleManageEpisodesPress}
             />
@@ -463,7 +470,7 @@ function SeriesDetailsSeason({
               name={icons.HISTORY}
               title={translate('HistorySeason')}
               aria-label={translate('HistorySeason')}
-              size={24}
+              size={20}
               isDisabled={!totalEpisodeCount}
               onPress={handleHistoryPress}
             />

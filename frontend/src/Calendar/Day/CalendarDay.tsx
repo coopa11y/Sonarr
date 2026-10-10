@@ -13,7 +13,7 @@ import {
   CalendarItem,
 } from 'typings/Calendar';
 import translate from 'Utilities/String/translate';
-import styles from './CalendarDay.css';
+import styles from './CalendarDay.module.css';
 
 function sort(items: (CalendarEventModel | CalendarEventGroupModel)[]) {
   return items.sort((a, b) => {

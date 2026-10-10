@@ -1,5 +1,6 @@
 import moment from 'moment-timezone';
 import React, { useCallback, useMemo } from 'react';
+import { useAppDimensions } from 'App/appStore';
 import {
   setCalendarOption,
   useCalendarOption,
@@ -16,20 +17,26 @@ import useCalendar, {
 } from 'Calendar/useCalendar';
 import DateInput from 'Components/DateInput';
 import Icon from 'Components/Icon';
-import Button from 'Components/Link/Button';
+import Link from 'Components/Link/Link';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
+import Menu from 'Components/Menu/Menu';
+import MenuButton from 'Components/Menu/MenuButton';
+import MenuContent from 'Components/Menu/MenuContent';
+import ViewMenuItem from 'Components/Menu/ViewMenuItem';
 import ScreenReaderOnly from 'Components/ScreenReaderOnly';
-import { icons } from 'Helpers/Props';
+import { align, icons } from 'Helpers/Props';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import translate from 'Utilities/String/translate';
 import CalendarHeaderViewButton from './CalendarHeaderViewButton';
-import styles from './CalendarHeader.css';
+import styles from './CalendarHeader.module.css';
 
 function CalendarHeader() {
   const { isFetching } = useCalendar();
   const view = useCalendarOption('view');
   const time = useCalendarTime();
   const { start, end } = useCalendarRange();
+
+  const { isSmallScreen, isLargeScreen } = useAppDimensions();
 
   const { longDateFormat } = useUiSettingsValues();
 
@@ -93,7 +100,66 @@ function CalendarHeader() {
 
   return (
     <div>
+      {isSmallScreen ? (
+        <h2
+          className={styles.titleMobile}
+          aria-live="polite"
+          aria-atomic={true}
+        >
+          {title}
+        </h2>
+      ) : null}
+
       <div className={styles.header}>
+        <div
+          className={styles.navigationButtons}
+          role="group"
+          aria-label={translate('CalendarNavigation')}
+        >
+          <Link
+            className={styles.navButton}
+            isDisabled={view === 'agenda'}
+            aria-label={translate('CalendarPreviousRange', { view: viewLabel })}
+            onPress={handlePreviousPress}
+          >
+            <Icon name={icons.PAGE_PREVIOUS} aria-hidden={true} />
+          </Link>
+
+          <Link
+            className={styles.navButton}
+            isDisabled={view === 'agenda'}
+            aria-label={translate('CalendarNextRange', { view: viewLabel })}
+            onPress={handleNextPress}
+          >
+            <Icon name={icons.PAGE_NEXT} aria-hidden={true} />
+          </Link>
+
+          <Link
+            className={styles.todayButton}
+            isDisabled={view === 'agenda'}
+            onPress={handleTodayPress}
+          >
+            {translate('Today')}
+          </Link>
+
+          <DateInput
+            value={datePickerValue}
+            label={translate('GoToDate')}
+            isDisabled={view === 'agenda'}
+            onChange={goToDate}
+          />
+        </div>
+
+        {isSmallScreen ? null : (
+          <h2
+            className={styles.titleDesktop}
+            aria-live="polite"
+            aria-atomic={true}
+          >
+            {title}
+          </h2>
+        )}
+
         <div
           className={styles.viewButtonsContainer}
           role="group"
@@ -108,90 +174,96 @@ function CalendarHeader() {
             </>
           ) : null}
 
-          <CalendarHeaderViewButton
-            view="month"
-            selectedView={view}
-            buttonGroupPosition="left"
-            onPress={handleViewChange}
-          />
+          {isLargeScreen ? (
+            <Menu className={styles.viewMenu} alignMenu={align.RIGHT}>
+              <MenuButton aria-label={translate('CalendarView')}>
+                <Icon name={icons.VIEW} size={22} aria-hidden={true} />
+              </MenuButton>
 
-          <CalendarHeaderViewButton
-            view="week"
-            selectedView={view}
-            buttonGroupPosition="center"
-            onPress={handleViewChange}
-          />
+              <MenuContent>
+                {isSmallScreen ? null : (
+                  <ViewMenuItem
+                    name="month"
+                    selectedView={view}
+                    onPress={handleViewChange}
+                  >
+                    {translate('Month')}
+                  </ViewMenuItem>
+                )}
 
-          <CalendarHeaderViewButton
-            view="forecast"
-            selectedView={view}
-            buttonGroupPosition="center"
-            onPress={handleViewChange}
-          />
+                <ViewMenuItem
+                  name="week"
+                  selectedView={view}
+                  onPress={handleViewChange}
+                >
+                  {translate('Week')}
+                </ViewMenuItem>
 
-          <CalendarHeaderViewButton
-            view="day"
-            selectedView={view}
-            buttonGroupPosition="center"
-            onPress={handleViewChange}
-          />
+                <ViewMenuItem
+                  name="forecast"
+                  selectedView={view}
+                  onPress={handleViewChange}
+                >
+                  {translate('Forecast')}
+                </ViewMenuItem>
 
-          <CalendarHeaderViewButton
-            view="agenda"
-            selectedView={view}
-            buttonGroupPosition="right"
-            onPress={handleViewChange}
-          />
-        </div>
+                <ViewMenuItem
+                  name="day"
+                  selectedView={view}
+                  onPress={handleViewChange}
+                >
+                  {translate('Day')}
+                </ViewMenuItem>
 
-        <div
-          className={styles.navigationButtons}
-          role="group"
-          aria-label={translate('CalendarNavigation')}
-        >
-          <Button
-            buttonGroupPosition="left"
-            isDisabled={view === 'agenda'}
-            aria-label={translate('CalendarPreviousRange', {
-              view: viewLabel,
-            })}
-            onPress={handlePreviousPress}
-          >
-            <Icon name={icons.PAGE_PREVIOUS} aria-hidden={true} />
-          </Button>
+                <ViewMenuItem
+                  name="agenda"
+                  selectedView={view}
+                  onPress={handleViewChange}
+                >
+                  {translate('Agenda')}
+                </ViewMenuItem>
+              </MenuContent>
+            </Menu>
+          ) : (
+            <>
+              <CalendarHeaderViewButton
+                className={styles.viewButton}
+                view="month"
+                selectedView={view}
+                onPress={handleViewChange}
+              />
 
-          <Button
-            buttonGroupPosition="right"
-            isDisabled={view === 'agenda'}
-            aria-label={translate('CalendarNextRange', {
-              view: viewLabel,
-            })}
-            onPress={handleNextPress}
-          >
-            <Icon name={icons.PAGE_NEXT} aria-hidden={true} />
-          </Button>
+              <CalendarHeaderViewButton
+                className={styles.viewButton}
+                view="week"
+                selectedView={view}
+                onPress={handleViewChange}
+              />
 
-          <Button
-            className={styles.todayButton}
-            isDisabled={view === 'agenda'}
-            onPress={handleTodayPress}
-          >
-            {translate('Today')}
-          </Button>
+              <CalendarHeaderViewButton
+                className={styles.viewButton}
+                view="forecast"
+                selectedView={view}
+                onPress={handleViewChange}
+              />
 
-          <DateInput
-            className={styles.datePicker}
-            value={datePickerValue}
-            label={translate('GoToDate')}
-            isDisabled={view === 'agenda'}
-            onChange={goToDate}
-          />
+              <CalendarHeaderViewButton
+                className={styles.viewButton}
+                view="day"
+                selectedView={view}
+                onPress={handleViewChange}
+              />
+
+              <CalendarHeaderViewButton
+                className={styles.viewButton}
+                view="agenda"
+                selectedView={view}
+                onPress={handleViewChange}
+              />
+            </>
+          )}
         </div>
       </div>
-
-      <h2 className={styles.title} aria-live="polite" aria-atomic={true}>
-        {title}
-      </h2>
     </div>
   );
 }

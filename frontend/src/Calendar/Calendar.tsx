@@ -16,7 +16,7 @@ import { useCalendarOption } from './calendarOptionsStore';
 import CalendarDays from './Day/CalendarDays';
 import CalendarHeader from './Header/CalendarHeader';
 import useCalendar, { goToToday } from './useCalendar';
-import styles from './Calendar.css';
+import styles from './Calendar.module.css';
 
 const UPDATE_DELAY = 3600000; // 1 hour
 
@@ -35,12 +35,12 @@ function Calendar() {
     clearTimeout(updateTimeout.current);
 
     function updateCalendar() {
-      refetch();
+      goToToday();
       updateTimeout.current = setTimeout(updateCalendar, UPDATE_DELAY);
     }
 
     updateTimeout.current = setTimeout(updateCalendar, UPDATE_DELAY);
-  }, [refetch]);
+  }, []);
 
   useEffect(() => {
     handleScheduleUpdate();
@@ -72,6 +72,10 @@ function Calendar() {
   }, [refetch]);
 
   useEffect(() => {
+    handleScheduleUpdate();
+  }, [handleScheduleUpdate]);
+
+  useEffect(() => {
     if (wasRefreshingSeries && !isRefreshingSeries) {
       refetch();
     }
@@ -85,13 +89,17 @@ function Calendar() {
       ) : null}
       {!error && !isLoading && view === 'agenda' ? (
         <div className={styles.calendarContent}>
-          <CalendarHeader />
+          <div className={styles.sticky}>
+            <CalendarHeader />
+          </div>
           <Agenda />
         </div>
       ) : null}
       {!error && !isLoading && view !== 'agenda' ? (
         <div className={styles.calendarContent}>
-          <CalendarHeader />
+          <div className={styles.sticky}>
+            <CalendarHeader />
+          </div>
           <CalendarDays />
         </div>
       ) : null}

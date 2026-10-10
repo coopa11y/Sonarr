@@ -14,7 +14,7 @@ import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import translate from 'Utilities/String/translate';
 import CalendarDay from './CalendarDay';
 import DayOfWeek from './DayOfWeek';
-import styles from './CalendarDays.css';
+import styles from './CalendarDays.module.css';
 
 function CalendarDays() {
   const view = useCalendarOption('view');
