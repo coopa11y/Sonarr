@@ -149,12 +149,11 @@ function CalendarLinkModalContent({
                 <FormInputButton
                   key="webcal"
                   kind={kinds.DEFAULT}
-                  aria-label={translate('SubscribeToICalFeed')}
                   to={iCalWebCalUrl}
                   target="_blank"
                   noRouter={true}
                 >
-                  <Icon name={icons.CALENDAR_O} aria-hidden={true} />
+                  <Icon name={icons.CALENDAR_O} />
                 </FormInputButton>,
               ]}
               onChange={handleInputChange}

@@ -6,7 +6,6 @@ import {
   useCalendarOption,
 } from 'Calendar/calendarOptionsStore';
 import { CalendarView } from 'Calendar/calendarViews';
-import getCalendarViewLabel from 'Calendar/getCalendarViewLabel';
 import useCalendar, {
   goToDate,
   goToNextRange,
@@ -23,7 +22,6 @@ import Menu from 'Components/Menu/Menu';
 import MenuButton from 'Components/Menu/MenuButton';
 import MenuContent from 'Components/Menu/MenuContent';
 import ViewMenuItem from 'Components/Menu/ViewMenuItem';
-import ScreenReaderOnly from 'Components/ScreenReaderOnly';
 import { align, icons } from 'Helpers/Props';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
 import translate from 'Utilities/String/translate';
@@ -96,42 +94,27 @@ function CalendarHeader() {
       endFormat
     )}`;
   }, [time, start, end, view, longDateFormat]);
-  const viewLabel = getCalendarViewLabel(view);
 
   return (
     <div>
-      {isSmallScreen ? (
-        <h2
-          className={styles.titleMobile}
-          aria-live="polite"
-          aria-atomic={true}
-        >
-          {title}
-        </h2>
-      ) : null}
+      {isSmallScreen ? <div className={styles.titleMobile}>{title}</div> : null}
 
       <div className={styles.header}>
-        <div
-          className={styles.navigationButtons}
-          role="group"
-          aria-label={translate('CalendarNavigation')}
-        >
+        <div className={styles.navigationButtons}>
           <Link
             className={styles.navButton}
             isDisabled={view === 'agenda'}
-            aria-label={translate('CalendarPreviousRange', { view: viewLabel })}
             onPress={handlePreviousPress}
           >
-            <Icon name={icons.PAGE_PREVIOUS} aria-hidden={true} />
+            <Icon name={icons.PAGE_PREVIOUS} />
           </Link>
 
           <Link
             className={styles.navButton}
             isDisabled={view === 'agenda'}
-            aria-label={translate('CalendarNextRange', { view: viewLabel })}
             onPress={handleNextPress}
           >
-            <Icon name={icons.PAGE_NEXT} aria-hidden={true} />
+            <Icon name={icons.PAGE_NEXT} />
           </Link>
 
           <Link
@@ -151,33 +134,18 @@ function CalendarHeader() {
         </div>
 
         {isSmallScreen ? null : (
-          <h2
-            className={styles.titleDesktop}
-            aria-live="polite"
-            aria-atomic={true}
-          >
-            {title}
-          </h2>
+          <div className={styles.titleDesktop}>{title}</div>
         )}
 
-        <div
-          className={styles.viewButtonsContainer}
-          role="group"
-          aria-label={translate('CalendarView')}
-        >
+        <div className={styles.viewButtonsContainer}>
           {isFetching ? (
-            <>
-              <LoadingIndicator className={styles.loading} size={20} />
-              <ScreenReaderOnly role="status">
-                {translate('Loading')}
-              </ScreenReaderOnly>
-            </>
+            <LoadingIndicator className={styles.loading} size={20} />
           ) : null}
 
           {isLargeScreen ? (
             <Menu className={styles.viewMenu} alignMenu={align.RIGHT}>
-              <MenuButton aria-label={translate('CalendarView')}>
-                <Icon name={icons.VIEW} size={22} aria-hidden={true} />
+              <MenuButton>
+                <Icon name={icons.VIEW} size={22} />
               </MenuButton>
 
               <MenuContent>

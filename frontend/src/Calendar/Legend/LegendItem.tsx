@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
 import Icon, { IconName, IconProps } from 'Components/Icon';
-import ScreenReaderOnly from 'Components/ScreenReaderOnly';
 import { CalendarStatus } from 'typings/Calendar';
 import titleCase from 'Utilities/String/titleCase';
 import styles from './LegendItem.module.css';
@@ -19,8 +18,8 @@ function LegendItem(props: LegendItemProps) {
   const { name, tooltip, fullColorEvents, status, icon, kind } = props;
 
   return (
-    <div className={styles.legendItem} role="listitem" title={tooltip}>
-      <span className={styles.indicator} aria-hidden={true}>
+    <div className={styles.legendItem} title={tooltip}>
+      <span className={styles.indicator}>
         {icon ? (
           <Icon
             className={classNames(
@@ -35,12 +34,7 @@ function LegendItem(props: LegendItemProps) {
         )}
       </span>
 
-      <span aria-hidden={true}>
-        {name ?? (status ? titleCase(status) : null)}
-      </span>
-      <ScreenReaderOnly>
-        {name ?? (status ? titleCase(status) : null)}. {tooltip}
-      </ScreenReaderOnly>
+      {name ?? (status ? titleCase(status) : null)}
     </div>
   );
 }

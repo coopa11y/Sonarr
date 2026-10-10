@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { CalendarView } from 'Calendar/calendarViews';
-import getCalendarViewLabel from 'Calendar/getCalendarViewLabel';
 import Link, { LinkProps } from 'Components/Link/Link';
+import titleCase from 'Utilities/String/titleCase';
 
 interface CalendarHeaderViewButtonProps
   extends Omit<LinkProps, 'children' | 'onPress'> {
@@ -23,11 +23,10 @@ function CalendarHeaderViewButton({
   return (
     <Link
       isDisabled={selectedView === view}
-      aria-pressed={selectedView === view}
       {...otherProps}
       onPress={handlePress}
     >
-      {getCalendarViewLabel(view)}
+      {titleCase(view)}
     </Link>
   );
 }

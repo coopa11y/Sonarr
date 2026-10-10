@@ -39,25 +39,15 @@ function DayOfWeek(props: DayOfWeekProps) {
   }
 
   return (
-    <th
-      scope="col"
+    <div
       className={classNames(
         styles.dayOfWeek,
         view === calendarViews.DAY && styles.isSingleDay,
         highlightToday && styles.isToday
       )}
     >
-      <time
-        dateTime={momentDate.format('YYYY-MM-DD')}
-        aria-label={
-          view === calendarViews.MONTH
-            ? momentDate.format('dddd')
-            : momentDate.format('dddd, MMMM D, YYYY')
-        }
-      >
-        {formatedDate}
-      </time>
-    </th>
+      {formatedDate}
+    </div>
   );
 }
 

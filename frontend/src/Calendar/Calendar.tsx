@@ -14,6 +14,7 @@ import translate from 'Utilities/String/translate';
 import Agenda from './Agenda/Agenda';
 import { useCalendarOption } from './calendarOptionsStore';
 import CalendarDays from './Day/CalendarDays';
+import DaysOfWeek from './Day/DaysOfWeek';
 import CalendarHeader from './Header/CalendarHeader';
 import useCalendar, { goToToday } from './useCalendar';
 import styles from './Calendar.module.css';
@@ -99,6 +100,7 @@ function Calendar() {
         <div className={styles.calendarContent}>
           <div className={styles.sticky}>
             <CalendarHeader />
+            <DaysOfWeek />
           </div>
           <CalendarDays />
         </div>

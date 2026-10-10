@@ -4,24 +4,18 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppValue } from 'App/appStore';
 import { useCalendarOption } from 'Calendar/calendarOptionsStore';
 import * as calendarViews from 'Calendar/calendarViews';
-import getCalendarViewLabel from 'Calendar/getCalendarViewLabel';
 import {
   goToNextRange,
   goToPreviousRange,
   useCalendarDates,
 } from 'Calendar/useCalendar';
-import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
-import translate from 'Utilities/String/translate';
 import CalendarDay from './CalendarDay';
-import DayOfWeek from './DayOfWeek';
 import styles from './CalendarDays.module.css';
 
 function CalendarDays() {
   const view = useCalendarOption('view');
   const dates = useCalendarDates();
   const isSidebarVisible = useAppValue('isSidebarVisible');
-  const { calendarWeekColumnHeader, shortDateFormat, showRelativeDates } =
-    useUiSettingsValues();
 
   const updateTimeout = useRef<ReturnType<typeof setTimeout>>();
   const touchStart = useRef<number | null>(null);
@@ -38,7 +32,7 @@ function CalendarDays() {
     clearTimeout(updateTimeout.current);
 
     const todaysDate = moment().startOf('day');
-    const diff = todaysDate.clone().add(1, 'day').diff(moment());
+    const diff = moment().diff(todaysDate.clone().add(1, 'day'));
 
     setTodaysDate(todaysDate.toISOString());
 
@@ -46,7 +40,7 @@ function CalendarDays() {
   }, []);
 
   const handleTouchStart = useCallback(
-    (event: React.TouchEvent<HTMLDivElement>) => {
+    (event: TouchEvent) => {
       const touches = event.touches;
       const currentTouch = touches[0].pageX;
 
@@ -63,97 +57,73 @@ function CalendarDays() {
     [isSidebarVisible]
   );
 
-  const handleTouchEnd = useCallback(
-    (event: React.TouchEvent<HTMLDivElement>) => {
-      const touches = event.changedTouches;
-      const currentTouch = touches[0].pageX;
+  const handleTouchEnd = useCallback((event: TouchEvent) => {
+    const touches = event.changedTouches;
+    const currentTouch = touches[0].pageX;
 
-      if (!touchStart.current) {
-        return;
-      }
+    if (!touchStart.current) {
+      return;
+    }
 
-      if (
-        currentTouch > touchStart.current &&
-        currentTouch - touchStart.current > 100
-      ) {
-        goToPreviousRange();
-      } else if (
-        currentTouch < touchStart.current &&
-        touchStart.current - currentTouch > 100
-      ) {
-        goToNextRange();
-      }
+    if (
+      currentTouch > touchStart.current &&
+      currentTouch - touchStart.current > 100
+    ) {
+      goToPreviousRange();
+    } else if (
+      currentTouch < touchStart.current &&
+      touchStart.current - currentTouch > 100
+    ) {
+      goToNextRange();
+    }
 
-      touchStart.current = null;
-    },
-    []
-  );
+    touchStart.current = null;
+  }, []);
 
   const handleTouchCancel = useCallback(() => {
     touchStart.current = null;
   }, []);
 
+  const handleTouchMove = useCallback(() => {
+    if (!touchStart.current) {
+      return;
+    }
+  }, []);
+
   useEffect(() => {
-    scheduleUpdate();
+    if (view === calendarViews.MONTH) {
+      scheduleUpdate();
+    }
+  }, [view, scheduleUpdate]);
+
+  useEffect(() => {
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchcancel', handleTouchCancel);
+    window.addEventListener('touchmove', handleTouchMove);
 
     return () => {
-      clearTimeout(updateTimeout.current);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchCancel);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [scheduleUpdate]);
-
-  const columnDates = view === calendarViews.MONTH ? dates.slice(0, 7) : dates;
-  const rowSize = view === calendarViews.MONTH ? 7 : Math.max(dates.length, 1);
-  const rows = [];
-
-  for (let index = 0; index < dates.length; index += rowSize) {
-    rows.push(dates.slice(index, index + rowSize));
-  }
+  }, [handleTouchStart, handleTouchEnd, handleTouchCancel, handleTouchMove]);
 
   return (
     <div
-      className={styles.tableContainer}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchCancel}
+      className={classNames(styles.days, styles[view as keyof typeof styles])}
     >
-      <table
-        className={classNames(
-          styles.calendarTable,
-          styles[view as keyof typeof styles]
-        )}
-        aria-label={`${translate('Calendar')} - ${getCalendarViewLabel(view)}`}
-      >
-        <thead>
-          <tr>
-            {columnDates.map((date) => (
-              <DayOfWeek
-                key={date}
-                date={date}
-                view={view}
-                isTodaysDate={date === todaysDate}
-                calendarWeekColumnHeader={calendarWeekColumnHeader}
-                shortDateFormat={shortDateFormat}
-                showRelativeDates={showRelativeDates}
-              />
-            ))}
-          </tr>
-        </thead>
-
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
-              {row.map((date) => (
-                <CalendarDay
-                  key={date}
-                  date={date}
-                  isTodaysDate={date === todaysDate}
-                  onEventModalOpenToggle={handleEventModalOpenToggle}
-                />
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {dates.map((date) => {
+        return (
+          <CalendarDay
+            key={date}
+            date={date}
+            isTodaysDate={date === todaysDate}
+            onEventModalOpenToggle={handleEventModalOpenToggle}
+          />
+        );
+      })}
     </div>
   );
 }

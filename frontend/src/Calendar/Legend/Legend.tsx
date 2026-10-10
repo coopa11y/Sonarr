@@ -62,12 +62,8 @@ function Legend() {
   }
 
   return (
-    <div
-      className={styles.legend}
-      role="list"
-      aria-label={translate('CalendarLegend')}
-    >
-      <div role="presentation">
+    <div className={styles.legend}>
+      <div>
         <LegendItem
           status="unaired"
           tooltip={translate('CalendarLegendEpisodeUnairedTooltip')}
@@ -81,10 +77,10 @@ function Legend() {
         />
       </div>
 
-      <div role="presentation">
+      <div>
         <LegendItem
           status="onAir"
-          name={translate('OnAir')}
+          name="On Air"
           tooltip={translate('CalendarLegendEpisodeOnAirTooltip')}
           fullColorEvents={fullColorEvents}
         />
@@ -96,7 +92,7 @@ function Legend() {
         />
       </div>
 
-      <div role="presentation">
+      <div>
         <LegendItem
           status="downloading"
           tooltip={translate('CalendarLegendEpisodeDownloadingTooltip')}
@@ -110,7 +106,7 @@ function Legend() {
         />
       </div>
 
-      <div role="presentation">
+      <div>
         <LegendItem
           name={translate('Premiere')}
           icon={icons.PREMIERE}
@@ -123,14 +119,12 @@ function Legend() {
       </div>
 
       {iconsToShow.length > 1 ? (
-        <div role="presentation">
+        <div>
           {iconsToShow[1]}
           {iconsToShow[2]}
         </div>
       ) : null}
-      {iconsToShow.length > 3 ? (
-        <div role="presentation">{iconsToShow[3]}</div>
-      ) : null}
+      {iconsToShow.length > 3 ? <div>{iconsToShow[3]}</div> : null}
     </div>
   );
 }

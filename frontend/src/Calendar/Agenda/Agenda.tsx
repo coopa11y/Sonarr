@@ -1,10 +1,7 @@
-import moment from 'moment-timezone';
-import React from 'react';
+import moment from 'moment';
+import React, { Fragment } from 'react';
 import useCalendar from 'Calendar/useCalendar';
-import ScreenReaderOnly from 'Components/ScreenReaderOnly';
 import { useUiSettingsValues } from 'Settings/UI/useUiSettings';
-import { CalendarItem } from 'typings/Calendar';
-import translate from 'Utilities/String/translate';
 import AgendaEvent from './AgendaEvent';
 import styles from './Agenda.module.css';
 
@@ -12,60 +9,27 @@ function Agenda() {
   const { data } = useCalendar();
   const { longDateFormat } = useUiSettingsValues();
 
-  const dateGroups = data.reduce<
-    { date: string; label: string; items: CalendarItem[] }[]
-  >((groups, item) => {
-    const date = moment(item.airDateUtc);
-    const dateKey = date.format('YYYY-MM-DD');
-    const lastGroup = groups[groups.length - 1];
-
-    if (!lastGroup || lastGroup.date !== dateKey) {
-      groups.push({
-        date: dateKey,
-        label: date.format(longDateFormat),
-        items: [item],
-      });
-    } else {
-      lastGroup.items.push(item);
-    }
-
-    return groups;
-  }, []);
-
   return (
-    <section className={styles.agenda} aria-labelledby="calendar-agenda-title">
-      <ScreenReaderOnly id="calendar-agenda-title">
-        {translate('Agenda')}
-      </ScreenReaderOnly>
+    <div className={styles.agenda}>
+      {data.map((item, index) => {
+        const date = moment(item.airDateUtc);
+        const previousDate =
+          index > 0 ? moment(data[index - 1].airDateUtc) : null;
+        const showHeader = !previousDate || !date.isSame(previousDate, 'day');
 
-      {dateGroups.length ? (
-        dateGroups.map((group) => {
-          const headingId = `calendar-agenda-${group.date}`;
+        return (
+          <Fragment key={item.id}>
+            {showHeader ? (
+              <div className={styles.dayHeader}>
+                {date.format(longDateFormat)}
+              </div>
+            ) : null}
 
-          return (
-            <section
-              key={group.date}
-              className={styles.day}
-              aria-labelledby={headingId}
-            >
-              <h3 id={headingId} className={styles.dayHeading}>
-                <time dateTime={group.date}>{group.label}</time>
-              </h3>
-
-              <ul className={styles.eventList}>
-                {group.items.map((item) => (
-                  <li key={item.id}>
-                    <AgendaEvent {...item} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })
-      ) : (
-        <div role="status">{translate('CalendarNoEpisodesInRange')}</div>
-      )}
-    </section>
+            <AgendaEvent {...item} />
+          </Fragment>
+        );
+      })}
+    </div>
   );
 }
 

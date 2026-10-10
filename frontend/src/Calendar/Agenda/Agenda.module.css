@@ -2,7 +2,6 @@
   margin-top: 10px;
 }
 
-.day,
 .dayHeader {
   margin: 20px 8px 2px;
   padding-bottom: 8px;
@@ -15,17 +14,4 @@
   &:first-child {
     margin-top: 0;
   }
-}
-
-.dayHeading {
-  margin: 0;
-  padding: 8px 10px;
-  background-color: var(--calendarBackgroundColor);
-  font-size: var(--defaultFontSize);
-}
-
-.eventList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }

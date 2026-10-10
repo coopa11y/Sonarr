@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import moment from 'moment-timezone';
-import React, { useCallback, useId, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useIsDownloadingEpisodes } from 'Activity/Queue/Details/QueueDetailsProvider';
 import { useCalendarOptions } from 'Calendar/calendarOptionsStore';
 import getStatusStyle from 'Calendar/getStatusStyle';
@@ -15,8 +15,6 @@ import formatTime from 'Utilities/Date/formatTime';
 import padNumber from 'Utilities/Number/padNumber';
 import translate from 'Utilities/String/translate';
 import CalendarEvent from './CalendarEvent';
-import getCalendarEventStatusDetails from './getCalendarEventStatusDetails';
-import getCalendarStatusLabel from './getCalendarStatusLabel';
 import styles from './CalendarEventGroup.module.css';
 
 interface CalendarEventGroupProps {
@@ -41,7 +39,6 @@ function CalendarEventGroup({
     useCalendarOptions();
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const expandedContentId = useId();
 
   const firstEpisode = events[0];
   const lastEpisode = events[events.length - 1];
@@ -96,29 +93,6 @@ function CalendarEventGroup({
     series.seriesType === 'anime' &&
     seasonNumber > 0 &&
     !allAbsoluteEpisodeNumbers;
-  const groupStatusLabels = [
-    getCalendarStatusLabel(statusStyle),
-    ...getCalendarEventStatusDetails({
-      missingAbsoluteNumber: isMissingAbsoluteNumber,
-      unverifiedSceneNumbering: events.some(
-        (event) => event.unverifiedSceneNumbering
-      ),
-      qualityCutoffNotMet: false,
-      seasonNumber,
-      episodeNumber: firstEpisode.episodeNumber,
-      finaleType: lastEpisode.finaleType,
-    }),
-  ];
-  const expandLabel = translate('CalendarExpandEpisodeGroup', {
-    count: events.length,
-    series: series.title,
-    season: seasonNumber,
-    status: groupStatusLabels.join('. '),
-  });
-  const collapseLabel = translate('CalendarCollapseEpisodeGroup', {
-    series: series.title,
-    season: seasonNumber,
-  });
 
   const handleExpandPress = useCallback(() => {
     setIsExpanded((state) => !state);
@@ -127,27 +101,23 @@ function CalendarEventGroup({
   if (isExpanded) {
     return (
       <div>
-        <div id={expandedContentId}>
-          {events.map((event) => {
-            return (
-              <CalendarEvent
-                key={event.id}
-                episodeId={event.id}
-                {...event}
-                onEventModalOpenToggle={onEventModalOpenToggle}
-              />
-            );
-          })}
-        </div>
+        {events.map((event) => {
+          return (
+            <CalendarEvent
+              key={event.id}
+              episodeId={event.id}
+              {...event}
+              onEventModalOpenToggle={onEventModalOpenToggle}
+            />
+          );
+        })}
 
         <Link
           className={styles.collapseContainer}
-          aria-label={collapseLabel}
-          aria-expanded={true}
-          aria-controls={expandedContentId}
+          component="div"
           onPress={handleExpandPress}
         >
-          <Icon name={icons.COLLAPSE} aria-hidden={true} />
+          <Icon name={icons.COLLAPSE} />
         </Link>
       </div>
     );
@@ -161,7 +131,6 @@ function CalendarEventGroup({
         fullColorEvents && 'fullColor'
       )}
     >
-      <div id={expandedContentId} hidden={true} />
       <div className={styles.info}>
         <div className={styles.seriesTitle}>{series.title}</div>
 
@@ -244,12 +213,10 @@ function CalendarEventGroup({
         ) : (
           <Link
             className={styles.expandContainerInline}
-            aria-label={expandLabel}
-            aria-expanded={false}
-            aria-controls={expandedContentId}
+            component="div"
             onPress={handleExpandPress}
           >
-            <Icon name={icons.EXPAND} aria-hidden={true} />
+            <Icon name={icons.EXPAND} />
           </Link>
         )}
       </div>
@@ -257,13 +224,11 @@ function CalendarEventGroup({
       {showEpisodeInformation ? (
         <Link
           className={styles.expandContainer}
-          aria-label={expandLabel}
-          aria-expanded={false}
-          aria-controls={expandedContentId}
+          component="div"
           onPress={handleExpandPress}
         >
           &nbsp;
-          <Icon name={icons.EXPAND} aria-hidden={true} />
+          <Icon name={icons.EXPAND} />
           &nbsp;
         </Link>
       ) : null}
