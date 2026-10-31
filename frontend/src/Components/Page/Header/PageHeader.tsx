@@ -60,6 +60,7 @@ function PageHeader() {
       <div className={styles.sidebarToggleContainer}>
         <IconButton
           id="sidebar-toggle-button"
+          className={styles.sidebarToggle}
           name={icons.NAVBAR_COLLAPSE}
           aria-label={translate('Menu')}
           onPress={handleSidebarToggle}
@@ -75,7 +76,6 @@ function PageHeader() {
           name={icons.HEART}
           aria-label={translate('Donate')}
           to="https://sonarr.tv/donate.html"
-          size={14}
           title={translate('Donate')}
         />
 

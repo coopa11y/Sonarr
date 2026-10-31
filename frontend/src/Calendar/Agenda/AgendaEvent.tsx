@@ -100,7 +100,7 @@ function AgendaEvent(props: AgendaEventProps) {
   }, []);
 
   return (
-    <div className={styles.event}>
+    <div className={classNames(styles.event, styles[statusStyle])}>
       <Link
         className={styles.underlay}
         aria-label={eventLabel}
@@ -230,7 +230,6 @@ function AgendaEvent(props: AgendaEventProps) {
         episodeEntity={episodeEntities.CALENDAR}
         seriesId={series.id}
         episodeTitle={title}
-        showOpenSeriesButton={true}
         onModalClose={handleDetailsModalClose}
       />
     </div>
